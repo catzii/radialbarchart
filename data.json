@@ -1,0 +1,208 @@
+[
+    {
+        "Pais": "Portugal", 
+        "idades": [
+            {
+                "escala": "0-9", 
+                "valor": 567
+            }, 
+            {
+                "escala": "10-19", 
+                "valor": 985
+            }, 
+            {
+                "escala": "20-29", 
+                "valor": 3876
+            }, 
+            {
+                "escala": "30-39", 
+                "valor": 4515
+            }, 
+            {
+                "escala": "40-49", 
+                "valor": 5147
+            }, 
+            {
+                "escala": "50-59", 
+                "valor": 5100
+            }, 
+            {
+                "escala": "60-69", 
+                "valor": 3376
+            },
+            {
+                "escala": "70-79", 
+                "valor": 2488
+            },
+            {
+                "escala": "80+", 
+                "valor": 4417
+            }
+        ]
+    }, 
+    {
+        "Pais": "Itália", 
+        "idades": [
+            {
+                "escala": "0-9", 
+                "valor": 63
+            }, 
+            {
+                "escala": "10-19", 
+                "valor": 118
+            }, 
+            {
+                "escala": "20-29", 
+                "valor": 511
+            }, 
+            {
+                "escala": "30-39", 
+                "valor": 819
+            }, 
+            {
+                "escala": "40-49", 
+                "valor": 1523
+            }, 
+            {
+                "escala": "50-59", 
+                "valor": 2480
+            }, 
+            {
+                "escala": "60-69", 
+                "valor": 2421
+            },
+            {
+                "escala": "70-79", 
+                "valor": 2849
+            },
+            {
+                "escala": "80+", 
+                "valor": 2533
+            }
+        ]
+    }, 
+    {
+        "Pais": "Espanha", 
+        "idades": [
+            {
+                "escala": "0-9", 
+                "valor": 129
+            }, 
+            {
+                "escala": "10-19", 
+                "valor": 221
+            }, 
+            {
+                "escala": "20-29", 
+                "valor": 1285
+            }, 
+            {
+                "escala": "30-39", 
+                "valor": 2208
+            }, 
+            {
+                "escala": "40-49", 
+                "valor": 2919
+            }, 
+            {
+                "escala": "50-59", 
+                "valor": 3129
+            }, 
+            {
+                "escala": "60-69", 
+                "valor": 2916
+            },
+            {
+                "escala": "70-79", 
+                "valor": 3132
+            },
+            {
+                "escala": "80+", 
+                "valor": 3020
+            }
+        ]
+    }, 
+    {
+        "Pais": "China",  
+        "idades": [
+            {
+                "escala": "0-9", 
+                "valor": 416
+            }, 
+            {
+                "escala": "10-19", 
+                "valor": 549
+            }, 
+            {
+                "escala": "20-29", 
+                "valor": 3619
+            }, 
+            {
+                "escala": "30-39", 
+                "valor": 7600
+            }, 
+            {
+                "escala": "40-49", 
+                "valor": 8571
+            }, 
+            {
+                "escala": "50-59", 
+                "valor": 9008
+            },
+            
+            {
+                "escala": "60-69", 
+                "valor": 8583
+            },
+            {
+                "escala": "70-79", 
+                "valor": 3918
+            },
+            {
+                "escala": "80+", 
+                "valor": 1408
+            }
+        ]
+    }, 
+    {
+        "Pais": "Roménia", 
+        "idades": [
+            {
+                "escala": "0-9", 
+                "valor": 472
+            }, 
+            {
+                "escala": "10-19", 
+                "valor": 623
+            }, 
+            {
+                "escala": "20-29", 
+                "valor": 1398
+            }, 
+            {
+                "escala": "30-39", 
+                "valor": 2460
+            }, 
+            {
+                "escala": "40-49", 
+                "valor": 3992
+            }, 
+            {
+                "escala": "50-59", 
+                "valor": 3501
+            }, 
+            {
+                "escala": "60-69", 
+                "valor": 2283
+            },
+            {
+                "escala": "70-79", 
+                "valor": 1311
+            },
+            {
+                "escala": "80+", 
+                "valor": 920
+            }
+        ]
+    }
+]

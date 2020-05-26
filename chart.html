@@ -1,0 +1,234 @@
+
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+ 
+    <meta charset="utf-8">
+    <title>grafico radial</title>
+    <style>
+    body {
+      font: 10px sans-serif;
+
+    }
+    
+    .axis path,
+    .axis line {
+       fill: none;
+       stroke: #000;
+       shape-rendering: crispEdges;
+            
+       }
+
+    .x.axis path {
+        display: none; 
+      }
+
+    </style>
+</head>
+
+<body>
+  
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script>
+      /* baseado em : https://blockbuilder.org/bricedev/0a9bf537a64a55ab1fe8*/
+   
+
+//definição do espaço onde se vai colocar o grafico e legenda
+var width = 960,
+    height = 700,
+    barHeight = height / 2 - 40;
+
+var formatNumber = d3.format("s");
+
+var color = d3.scale.ordinal()//Escala de cores da legenda
+    .range(["#da4453", "#e9573f", "#f6bb42", "#a0d468", "#48cfad", "#4fc1e9", "#5d9cec","#967adc","#ec87c0"]);
+//coloca o grafico com metade da altura e largura do espaço total
+var svg = d3.select('body').append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", "translate(" + width/2 + "," + height/2 + ")");
+
+d3.json("data.json", function(error, data) { //chama os dados
+
+//mapeia os dados
+  var nomesPais = data.map(function(d) { return d.Pais; });
+  var escIdades = data[0].idades.map(function(d) { return d.escala; });
+
+  var barScale = d3.scale.linear()// escala de cada barra para as barras atingirem apenas o valor igual aos dados
+      .domain([0, d3.max(data, function(d) { return d3.max(d.idades, function(d) { return d.valor; }); })])
+      .range([0, barHeight]);
+//comprimento dos dados 
+  var numBarPaises = nomesPais.length ;
+  var numBarIdades = escIdades.length ;
+
+  var x = d3.scale.linear()// valores para os eixos de acordo com os dados e distribui pela altura do grafico 
+      .domain([0, d3.max(data, function(d) { return d3.max(d.idades, function(d) { return d.valor; }); })])
+      .range([0, -barHeight]);
+
+  var xAxis = d3.svg.axis()// coloca os valores no eixo, de acordo com os dados da variavel acima 
+      .scale(x).orient("left")
+      .ticks(5)
+      .tickFormat(formatNumber);
+
+  //circulos a tracejado no eixo em cada um dos 5 pontos para ser mais facil ler
+      
+  var circles = svg.selectAll("circle")
+        
+        .data(x.ticks(5))
+        .enter().append("circle")
+        .attr("r", function(d) {return barScale(d);})
+        .style("fill", "none") 
+        .style("stroke", "black")
+        .style("stroke-dasharray", "2,2")
+        .style("stroke-width","0.5px");
+//distribui as barras pelo circulo por pais
+  var paises = svg.selectAll(".pais")
+      .data(data)
+      .enter().append("g")
+      .attr("class", "pais")
+      .attr("transform", function(d,i) { return "rotate(" + (i * 360 / numBarPaises) + ")"; });
+//cria o grafico dividido pelo nº de paises
+  var arc = d3.svg.arc()
+      .startAngle(function(d,i) { return (i * 2 * Math.PI) / (numBarIdades*numBarPaises); })
+      .endAngle(function(d,i) { return ((i + 1) * 2 * Math.PI) / (numBarIdades*numBarPaises); })
+      .innerRadius(0);
+  //barras consoante dados 
+  var segments = paises.selectAll("path")
+        .data(function(d) { return d.idades; })
+        .enter()
+        .append("path")
+        .each(function(d) { d.outerRadius = 0; })
+        .style("fill", function (d) { return color(d.escala); })
+        .attr("d", arc)
+        //rato torna as barras transparentes quando se passa o rato 
+        .on('mouseover', function (d, i) {
+        d3.select(this).transition()
+        .duration('50')
+        .attr('opacity', '.85');
+        tooltip.style("display", null);
+                                  
+          })
+        //mostra os dados referentes a cada barra quando o rato move
+        .on('mousemove', function (d, i) {
+            var xPos=d3.mouse(this)[0]-5;
+            var yPos=d3.mouse(this)[1]-5;
+            tooltip.attr("transform","translate(" + xPos + ","+yPos+")");
+            tooltip.select("text").text(d.escala +":"+d.valor);
+
+         })
+         // volta ao normal quando retiramos o rato 
+        .on('mouseout', function (d, i) {
+          d3.select(this).transition()
+          .duration('50')
+          .attr('opacity', '1')
+          tooltip.style("display", "none")
+              
+              });
+   //variabvell tooltip que faz aparecer o texto            
+  var tooltip =svg.append("g")
+  .attr("class", tooltip)
+  .style("display", "none");
+
+  tooltip.append("text")
+  .style("font-size", "1.25em")
+  .style("font-weight", "bold");            
+          
+   // animação 
+  segments.transition().ease("bounce").duration(1200).delay(function(d,i,u) { return u * 200 + 400;})
+          .attrTween("d", function(d,index) {
+            var i = d3.interpolate(d.outerRadius, barScale(d.valor));
+            return function(t) { d.outerRadius = i(t); return arc(d,index); };
+          });
+  
+// circulo de fora
+  svg.append("circle")
+      .attr("r", barHeight)
+      .classed("outer", true)
+      .style("fill", "none")
+      .style("stroke", "black")
+      .style("stroke-width","1.5px");
+
+//linhas verticias
+  paises.selectAll("line")
+      .data(function(d) { return d.idades; })
+      .enter().append("line")
+      .attr("y2", function(d,i) { return i===0 ? -barHeight - 20 : -barHeight; })
+      .style("stroke", "black")
+      .style("stroke-width", function(d,i) { return i===0 ? "1px" : "0.2px"; })// se for eixo linha preta , se não põe transparencia     
+
+//eixos 
+  svg.append("g")
+      .attr("class", "x axis")
+      .call(xAxis);
+ //titulo
+  svg.append("text")
+      .attr("x", -280)             
+      .attr("y", -320)
+      .attr("text-anchor", "middle")  
+      .style("font-size", "25px") 
+      .style("font-weight", "bold")
+      .style("text-decoration", "underline") 
+      .style("fill", "none")
+      .style("stroke", "#cc66ff")
+      .text("Infectados Covid Por Faixa Etária");
+//legenda
+  svg.append("text")
+      .attr("x",435)             
+      .attr("y", -265)
+      .attr("text-anchor", "middle")  
+      .style("font-size", "16px") 
+      .style("font-weight", "bold")
+      .text("Legenda:");
+
+  // Legendas 
+  var labelRadius = barHeight * 1.025; //tamanho legenda
+
+  var labels = svg.append("g")
+      .classed("labels", true)
+      
+// coloca os labels dos paises a volta do circulo 
+ labels.append("def")
+        .append("path")
+        .attr("id", "label-path")
+        .attr("d", "m0 " + -labelRadius + " a" + labelRadius + " " + labelRadius + " 0 1,1 -0.01 0");// caminho a ser desenhado
+//texto legenda nomes paies
+  labels.selectAll("text")
+      .data(nomesPais)
+      .enter().append("text")
+      .style("text-anchor", "middle")
+      .style("font-weight","bold")
+      .append("textPath")
+      .style("font-size", "16px") 
+      .attr("xlink:href", "#label-path")
+      .attr("startOffset", function(d, i) {return i * 100 / numBarPaises + 50 / numBarPaises + '%';}) //divisão do texto para que fique exactamente no centro de cada quadrante
+      .text(function(d) {return d.toUpperCase(); });
+
+  // legenda coloca a legenda com as distancias entre quadrados 
+  var legend = svg.selectAll(".legend")
+      .data(escIdades.slice().reverse())
+      .enter().append("g")
+      .attr("class", "legend")
+      .style("font-weight","bold")
+      .attr("transform", function(d, i) { return "translate("+ -width/2 + "," + (-(height/2 - 100) + (i * 20)) + ")"; });
+//rectangulos com a cor correspondente lengenda
+  legend.append("rect")
+        .attr("x", width - 33)
+        .attr("width", 18)
+        .attr("height", 18)
+        .style("font-weight","bold")
+        .style("fill", color);
+//texto da legenda
+  legend.append("text")
+        .attr("x", width - 39)
+        .attr("y", 9)
+        .attr("dy", ".35em")
+        .style("font-weight","bold")
+        .style("text-anchor", "end")
+        .text(function(d) { return d; });
+
+});
+
+    </script>
+  </body>
+</html>
